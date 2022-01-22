@@ -5,6 +5,7 @@ import 'package:animate_do/animate_do.dart';
 
 import 'package:servicios/providers/reporte_form_provider.dart';
 import 'package:servicios/providers/socket_service.dart';
+import 'package:servicios/providers/ui_provider.dart';
 
 import 'package:servicios/widgets/forma_fondo.dart';
 import 'package:servicios/widgets/imagen_reporte.dart';
@@ -37,6 +38,9 @@ class _FormularioReporte extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final uiProvider = Provider.of<UiProvider>(context);
+
     return Container(
       child: SingleChildScrollView(
         child: Column(
@@ -50,7 +54,10 @@ class _FormularioReporte extends StatelessWidget {
                   child: FadeInLeft(
                     delay: Duration(milliseconds: 300),
                     child: IconButton(
-                      onPressed: () => Navigator.of(context).pop(), 
+                      onPressed: () => {
+                        uiProvider.imagePath = '',
+                        Navigator.of(context).pop()
+                      }, 
                       icon: Icon(Icons.arrow_back_ios_new, size: 40, color: Colors.white)
                     ),
                   )
@@ -62,15 +69,18 @@ class _FormularioReporte extends StatelessWidget {
                     delay: Duration(milliseconds: 300),
                     child: IconButton(
                       onPressed: () async {
-                        final ImagePicker picker = new ImagePicker();
-                        final XFile? pickedFile = await picker.pickImage(source: ImageSource.camera, imageQuality: 100);
+                        final ImagePicker pickerCamara = new ImagePicker();
+                        final XFile? pickedFileCamara = await pickerCamara.pickImage(source: ImageSource.camera, imageQuality: 30);
                       
-                        if(pickedFile == null) {
-                          print('No selecciono nada');
+                        if(pickedFileCamara == null) {
+                          // print('No selecciono nada');
+                          uiProvider.imagePath = '';
                           return;
                         }
 
-                        print('Tenemos imagen ${pickedFile.path}');
+                        uiProvider.imagePath = pickedFileCamara.path;
+                        // print('Tenemos imagen ${pickedFileCamara.path}');
+                        uiProvider.selectedImage(pickedFileCamara.path);
                       }, 
                       icon: Icon(Icons.camera_alt, size: 40, color: Colors.white)
                     ),
@@ -85,15 +95,18 @@ class _FormularioReporte extends StatelessWidget {
                     delay: Duration(milliseconds: 300),
                     child: IconButton(
                       onPressed: () async {
-                        final ImagePicker picker = new ImagePicker();
-                        final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 100);
+                        final ImagePicker pickerGaleria = new ImagePicker();
+                        final XFile? pickedFileGaleria = await pickerGaleria.pickImage(source: ImageSource.gallery, imageQuality: 30);
                       
-                        if(pickedFile == null) {
-                          print('No selecciono nada');
+                        if(pickedFileGaleria == null) {
+                          uiProvider.imagePath = '';
+                          // print('No selecciono nada');
                           return;
                         }
 
-                        print('Tenemos imagen ${pickedFile.path}');
+                        uiProvider.imagePath = pickedFileGaleria.path;
+                        // print('Tenemos imagen ${pickedFileGaleria.path}');
+                        uiProvider.selectedImage(pickedFileGaleria.path);
                       }, 
                       icon: Icon(Icons.image, size: 40, color: Colors.white)
                     ),
@@ -126,6 +139,7 @@ class _ItemForm extends StatelessWidget {
 
     final reporteForm = Provider.of<ReporteFormProvider>(context);
     final socketService = Provider.of<SocketService>(context);
+    final uiProvider = Provider.of<UiProvider>(context);
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
@@ -217,7 +231,7 @@ class _ItemForm extends StatelessWidget {
                 Icon(this.servicio, size: 70, color: Color.fromRGBO(222, 113, 82, 1)),
                 
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if(!reporteForm.isValidForm()) return;
                     FocusScope.of(context).unfocus();
                     socketService.emit('prueba', {
@@ -225,6 +239,10 @@ class _ItemForm extends StatelessWidget {
                       'direccion': reporteForm.direccion.trim(),
                       'descripcion': reporteForm.descripcion.trim()
                     });
+
+                    // cargar imagen el claudinary
+                    final String? imageUrl = await uiProvider.cargarImagen(); // Url de la imagen para subir a Mongo
+                    // print(imageUrl);
                     Navigator.pushReplacementNamed(context, 'home');
                   }, 
                   child: FadeInRight(
