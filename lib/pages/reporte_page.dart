@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:servicios/helpers/mostrar_alerta.dart';
 
+import 'package:servicios/providers/auth_provider.dart';
 import 'package:servicios/providers/reporte_form_provider.dart';
 import 'package:servicios/providers/socket_service.dart';
 import 'package:servicios/providers/ui_provider.dart';
 
 import 'package:servicios/widgets/forma_fondo.dart';
 import 'package:servicios/widgets/imagen_reporte.dart';
+import 'package:servicios/widgets/progress_circular.dart';
 
 
 class ReportePage extends StatelessWidget {
@@ -17,13 +20,18 @@ class ReportePage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final servicio = ModalRoute.of(context)?.settings.arguments ?? Icons.person;
-
+    final size = MediaQuery.of(context).size;
+    final uiProvider = Provider.of<UiProvider>(context);
+  
     return Scaffold(
       body: Stack(
         children: [
           _FondoReporte(),
           // _TituloReporte(),
           _FormularioReporte(servicio),
+
+          if(uiProvider.isLoading)
+            Positioned(bottom: 30, left: size.width * 0.5 - 30, child: ProgressCircular())
         ],
       ),
     );
@@ -140,6 +148,8 @@ class _ItemForm extends StatelessWidget {
     final reporteForm = Provider.of<ReporteFormProvider>(context);
     final socketService = Provider.of<SocketService>(context);
     final uiProvider = Provider.of<UiProvider>(context);
+    final authProvider = Provider.of<AuthProvider>(context);
+    final usuario = authProvider.usuario;
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
@@ -228,21 +238,34 @@ class _ItemForm extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(this.servicio, size: 70, color: Color.fromRGBO(222, 113, 82, 1)),
+                Icon(this.servicio.icon, size: 70, color: Color.fromRGBO(222, 113, 82, 1)),
                 
                 TextButton(
                   onPressed: () async {
                     if(!reporteForm.isValidForm()) return;
                     FocusScope.of(context).unfocus();
+                    uiProvider.isLoading = true;
+                    // cargar imagen en cloudinary
+                    final String? imageUrl = await uiProvider.cargarImagen(); // Url de la imagen para subir a Mongo
+                    // guardar info en mongo
+                    final bool reporte = await authProvider.reporte(usuario.nombre, usuario.numero, imageUrl!, reporteForm.direccion.trim(), reporteForm.descripcion.trim(), this.servicio.nombre);
+                    uiProvider.isLoading = false;
+                    if(reporte == false) {
+                      mostrarAlerta(context, 'Algo salio Mal', 'Vuelva a intentarlo, hubo algun problema de conexion y no se pudo enviar el reporte');
+                    } 
+                    // Enviar por socket de la info
                     socketService.emit('prueba', {
-                      'imagen': 'Aqui va la url de la imagen',
+                      'nombre': usuario.nombre,
+                      'numero': usuario.numero,
+                      'urlImagen': imageUrl,
                       'direccion': reporteForm.direccion.trim(),
-                      'descripcion': reporteForm.descripcion.trim()
+                      'descripcion': reporteForm.descripcion.trim(),
+                      'tipoServicio': this.servicio.nombre
                     });
 
-                    // cargar imagen el claudinary
-                    final String? imageUrl = await uiProvider.cargarImagen(); // Url de la imagen para subir a Mongo
-                    // print(imageUrl);
+                    // Mostrar Alerta de enviado
+                    await mostrarAlerta(context, 'Enviado', 'El reporte se envio correctamente');
+                    
                     Navigator.pushReplacementNamed(context, 'home');
                   }, 
                   child: FadeInRight(

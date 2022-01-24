@@ -84,7 +84,7 @@ final _storage = new FlutterSecureStorage();
       body: jsonEncode(data),
       headers: { 'Content-Type': 'application/json' }
     );
-
+    
     // print(resp.body);
     this.autenticando = false;
 
@@ -99,6 +99,37 @@ final _storage = new FlutterSecureStorage();
     } else {
       final respBody = jsonDecode(resp.body);
        return respBody['msg'];
+    }
+  }
+
+  Future reporte(String nombre, String numero, String urlImage, String direccion, String descripcion, String tipoServicio) async {
+
+    // this.autenticando = true;
+
+    final data = {
+      'nombre': nombre,
+      'numero': numero,
+      'urlImagen': urlImage,
+      'direccion': direccion,
+      'descripcion': descripcion,
+      'tipoServicio': tipoServicio
+    };
+
+    final uri = Uri.parse('${ Environment.apiUrl }/reporte/new');
+
+    final resp = await http.post(uri,
+      body: jsonEncode(data),
+      headers: { 'Content-Type': 'application/json' }
+    );
+
+    // this.autenticando = false;
+
+    if(resp.statusCode == 200) {
+
+      return true;
+    } else {
+      
+      return false;
     }
   }
 

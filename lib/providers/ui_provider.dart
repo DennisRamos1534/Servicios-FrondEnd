@@ -9,6 +9,13 @@ class UiProvider extends ChangeNotifier {
   
   int _selectedMenuOpt = 1;
   String _imagePath = '';
+  bool _isLoading = false;
+
+  bool get isLoading => this._isLoading;
+  set isLoading(bool valor) {
+    this._isLoading = valor;
+    notifyListeners();
+  }
 
   File? newPictureFile;
 
@@ -30,7 +37,7 @@ class UiProvider extends ChangeNotifier {
   }
 
   Future<String?> cargarImagen() async {
-    if(this.newPictureFile == null) return null;
+    if(this.newPictureFile == null) return 'no-imagen';
 
     final url = Uri.parse('https://api.cloudinary.com/v1_1/dufc4ce3v/image/upload?upload_preset=servicios');
     final imageUploadRequest = http.MultipartRequest( 'POST', url );
