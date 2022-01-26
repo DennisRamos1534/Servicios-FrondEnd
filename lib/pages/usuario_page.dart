@@ -1,7 +1,13 @@
-import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:animate_do/animate_do.dart';
+import 'package:servicios/helpers/mostrar_alerta.dart';
 
+import 'package:servicios/providers/auth_provider.dart';
+import 'package:servicios/providers/ui_provider.dart';
+import 'package:servicios/providers/usuario_form_provider.dart';
 import 'package:servicios/widgets/fondo_usuario.dart';
+import 'package:servicios/widgets/progress_circular.dart';
 
 
 class UsuarioPage extends StatelessWidget {
@@ -9,11 +15,19 @@ class UsuarioPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    final uiProvider = Provider.of<UiProvider>(context);
+    final size = MediaQuery.of(context).size;
+
     return Stack(
       children: [
         FondoUsuario(),
         _IconoNombre(),
-        _FormularioUsuario(),
+        ChangeNotifierProvider(
+          create: (_) => UsuarioFormProvider(),
+          child: _FormularioUsuario() 
+        ),
+        if(uiProvider.isLoading)
+          Positioned(bottom: 30, left: size.width * 0.5 - 30, child: ProgressCircular())
       ],
     );
   }
@@ -26,11 +40,22 @@ class _FormularioUsuario extends StatelessWidget {
   Widget build(BuildContext context) {
     
     final size = MediaQuery.of(context).size;
+    final authProvider = Provider.of<AuthProvider>(context);
+    final usuario = authProvider.usuario;
+    final usuarioForm = Provider.of<UsuarioFormProvider>(context);
+    final uiProvider = Provider.of<UiProvider>(context);
     
+    // usuarioForm.nombre = usuario.nombre;
+    // usuarioForm.numero = usuario.numero;
+    // uiProvider.nombreUsuario = usuario.nombre;
+
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: SingleChildScrollView(
         child: Form(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          key: usuarioForm.usuarioFormKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -48,7 +73,8 @@ class _FormularioUsuario extends StatelessWidget {
                     ]
                   ),
                   child: TextFormField(
-                    initialValue: 'Antonio Aguilar',
+                    readOnly: true,
+                    initialValue: usuario.nombre,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
@@ -59,6 +85,10 @@ class _FormularioUsuario extends StatelessWidget {
                       hintStyle: TextStyle(color: Colors.grey),
                       prefixIcon: Icon(Icons.person, color: Colors.orange),
                     ),
+                    // onChanged: (value) => usuarioForm.nombre = value,
+                    // validator: (value) {
+                    //   return value!.trim().length >  3 ? null : 'Debe de ser mayor a 3 letras';
+                    // },
                   ),
                 ),
               ),
@@ -78,7 +108,8 @@ class _FormularioUsuario extends StatelessWidget {
                     ]
                   ),
                   child: TextFormField(
-                    initialValue: '9821144162',
+                    readOnly: true,
+                    initialValue: usuario.numero,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
@@ -89,6 +120,11 @@ class _FormularioUsuario extends StatelessWidget {
                       hintStyle: TextStyle(color: Colors.grey),
                       prefixIcon: Icon(Icons.phone_iphone_rounded, color: Colors.orange),
                     ),
+                    // onChanged: (value) => usuarioForm.numero = value,
+                    // validator: (value) {
+                    //   if(value != null && value.length == 10) return null;
+                    //   return 'Debe de tener 10 numeros';
+                    // },
                     // maxLines: 4,
                   ),
                 ),
@@ -109,19 +145,23 @@ class _FormularioUsuario extends StatelessWidget {
                   ),
                   child: TextFormField(
                     obscureText: true,
-                    initialValue: 'loquesea',
+                    initialValue: '',
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
                       
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(20), borderSide: BorderSide.none),
                       focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-                      hintText: '   Contraseña',
+                      hintText: '   Nueva Contraseña',
                       prefixIcon: Icon(Icons.lock, color: Colors.orange),
                       hintStyle: TextStyle(color: Colors.grey),
                     ),
+                    onChanged: (value) => usuarioForm.password = value,
+                    validator: (value) {
+                      if(value != null && value.length >= 4) return null;
+                      return 'Debe de ser mayor o igual a 4 caracteres';
+                    },
                     // maxLines: 4,
-                    
                   ),
                 ),
               ),
@@ -132,7 +172,25 @@ class _FormularioUsuario extends StatelessWidget {
                 delay: Duration(milliseconds: 700),
                 duration: Duration(milliseconds: 500),
                 child: TextButton(
-                  onPressed: () {}, 
+                  onPressed:() async {
+
+                    if(usuarioForm.isValidForm()) {
+                      FocusScope.of(context).unfocus();
+                      uiProvider.isLoading = true;
+                      // Peticion http
+                      final usuarioOk = await authProvider.actualizarUsuario( usuario.nombre, usuarioForm.password.toString().trim(), usuario.uid);
+                      uiProvider.isLoading = false;
+                      if(usuarioOk) {
+                        // authProvider.nombreUsuario = usuarioForm.nombre.toString().trim();
+                        await mostrarAlerta(context, 'El usuario se actualizo', 'El usuario se actualizo correctamente');
+                        // usuarioForm.password = '';
+                      } else {
+                        // mostrar Alerta
+                        mostrarAlerta(context, 'Numero repetido', 'El numero ya esta registrado en otra cuenta');
+                      }
+                    
+                    }
+                  }, 
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 35, vertical: 15),
                     decoration: BoxDecoration(
@@ -172,6 +230,8 @@ class _IconoNombre extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final size = MediaQuery.of(context).size;
+    final authProvider = Provider.of<AuthProvider>(context);
+    final usuario = authProvider.usuario;
 
     return Container(
       margin: EdgeInsets.only(top: size.height * 0.07),
@@ -187,7 +247,7 @@ class _IconoNombre extends StatelessWidget {
           FadeInDown(
             delay: Duration(milliseconds: 550),
             duration: Duration(milliseconds: 500),
-            child: Text('Antonio Aguilar', style: TextStyle(color: Colors.white, fontSize: 25, fontFamily: 'TenaliRamakrishna'))
+            child: Text(usuario.nombre, style: TextStyle(color: Colors.white, fontSize: 25, fontFamily: 'TenaliRamakrishna'))
           ),
           SizedBox(height: 50),
           FadeInLeft(

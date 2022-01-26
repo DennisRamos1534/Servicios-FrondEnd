@@ -13,8 +13,18 @@ class AuthProvider with ChangeNotifier {
   late Usuario usuario;
   bool _autenticando = false;
 
+  // pantalla usuario
+  String _nombreUsuario = '';
+
+  String get nombreUsuario => this._nombreUsuario;
+  set nombreUsuario(String valor) {
+    this._nombreUsuario = valor;
+    notifyListeners();
+  }
+  // pantalla usuario
+
   // Create storage
-final _storage = new FlutterSecureStorage();
+  final _storage = new FlutterSecureStorage();
 
   bool get autenticando => this._autenticando;
   set autenticando( bool valor ) {
@@ -33,6 +43,20 @@ final _storage = new FlutterSecureStorage();
     final _storage = new FlutterSecureStorage();
     await _storage.delete(key: 'token');
   }
+
+  /////////////////// password en el localStorage   ////////////////////////
+
+  // getters gel token de forma estatica 
+  // static Future<String> getPassword() async {
+  //   final _storage = new FlutterSecureStorage();
+  //   final password = await _storage.read(key: 'password');
+  //   return password!;
+  // }
+
+  // static Future<void> deletePassword() async {
+  //   final _storage = new FlutterSecureStorage();
+  //   await _storage.delete(key: 'password');
+  // }
 
   Future<bool> login(String numero, String password) async {
 
@@ -58,9 +82,14 @@ final _storage = new FlutterSecureStorage();
     if(resp.statusCode == 200) {
       final loginResponse = loginResponseFromJson(resp.body);
       this.usuario = loginResponse.usuario;
+      // print(this.usuario);
+      // Agregamos el nombre
+      // this._nombreUsuario = this.usuario.nombre;
       
       // Guardar token en lugar seguro
       await this._guardarToken(loginResponse.token!);
+      // Guardar password en el localStorage
+      // await this._guardarPassword(password);
 
       return true;
     } else {
@@ -91,9 +120,12 @@ final _storage = new FlutterSecureStorage();
     if(resp.statusCode == 200) {
       final loginResponse = loginResponseFromJson(resp.body);
       this.usuario = loginResponse.usuario;
+      // this._nombreUsuario = this.usuario.nombre;
       
       // Guardar token en lugar seguro
       await this._guardarToken(loginResponse.token!);
+      // Guardar password en el localStorage
+      // await this._guardarPassword(password);
 
       return true;
     } else {
@@ -133,6 +165,35 @@ final _storage = new FlutterSecureStorage();
     }
   }
 
+
+  Future actualizarUsuario(String nombre,String password, String uid) async {
+
+    // this.autenticando = true;
+
+    final data = {
+      'nombre': nombre,
+      'password': password
+    };
+
+    final uri = Uri.parse('${ Environment.apiUrl }/actualizar/$uid');
+
+    final resp = await http.put(uri,
+      body: jsonEncode(data),
+      headers: { 'Content-Type': 'application/json' }
+    );
+
+    // this.autenticando = false;
+
+    if(resp.statusCode == 200) {
+      // final loginResponse = loginResponseFromJson(resp.body);
+      // this.usuario = loginResponse.usuario;
+      return true;
+    } else {
+      
+      return false;
+    }
+  }
+
   Future<bool> isLoggedIn() async {
     
     final token = await this._storage.read(key: 'token');
@@ -152,6 +213,7 @@ final _storage = new FlutterSecureStorage();
     if(resp.statusCode == 200) {
       final loginResponse = loginResponseFromJson(resp.body);
       this.usuario = loginResponse.usuario;
+      this._nombreUsuario = this.usuario.nombre;
       
       // Guardar token en lugar seguro
       await this._guardarToken(loginResponse.token!);
@@ -166,7 +228,15 @@ final _storage = new FlutterSecureStorage();
     return await _storage.write(key: 'token', value: token);
   }
 
+  // Future _guardarPassword(String password) async {
+  //   return await _storage.write(key: 'password', value: password);
+  // }
+
   Future logout() async {
     await _storage.delete(key: 'token');
   }
+
+  // Future eliminarPassword() async {
+  //   await _storage.delete(key: 'password');
+  // }
 }
