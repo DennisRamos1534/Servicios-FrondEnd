@@ -1,9 +1,13 @@
-import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:animate_do/animate_do.dart';
+
+// import 'package:servicios/providers/auth_provider.dart';
+import 'package:servicios/providers/reporte_provider.dart';
 import 'package:servicios/providers/socket_service.dart';
 
 import 'package:servicios/widgets/item_lista_historial.dart';
+
 
 
 class HistorialPage extends StatelessWidget {
@@ -18,6 +22,7 @@ class HistorialPage extends StatelessWidget {
       children: [
         _FondoHistorial(),
         _ListaHistorial(),
+        // listaHistorial(),
         Positioned(
           top: 80,
           right: 60,
@@ -34,6 +39,8 @@ class HistorialPage extends StatelessWidget {
     );
   }
 }
+// respaldo 
+
 
 class _ListaHistorial extends StatelessWidget {
 
@@ -41,14 +48,18 @@ class _ListaHistorial extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final size = MediaQuery.of(context).size;
-    final lista = ['Alumbrado Publico', 'Agua potable', 'Agua potable', 'Baches', 'Alumbrado Publico', 'Baches'];
+    // final authProvider = Provider.of<AuthProvider>(context);
+    // final usuario = authProvider.usuario;
+    final reporteProvider = Provider.of<ReporteProvider>(context);
+    // reporteProvider.reporteFiltrado(usuario.numero);
+    // final lista = ['Alumbrado Publico', 'Agua potable', 'Agua potable', 'Baches', 'Alumbrado Publico', 'Baches'];
 
     return Container(
       padding: EdgeInsets.only(top: size.height * 0.17),
       margin: EdgeInsets.only(left: 25, right: 25),
       child: ListView.builder(
-        itemCount: lista.length,
-        itemBuilder: (context, i) => ItemListaHistorial(lista[i]),
+        itemCount: reporteProvider.reportes.length,
+        itemBuilder: (context, i) => ItemListaHistorial(reporteProvider.reportes[i]),
       ),
     );
   }

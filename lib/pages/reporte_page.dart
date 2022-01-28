@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:servicios/helpers/mostrar_alerta.dart';
 
 import 'package:servicios/providers/auth_provider.dart';
 import 'package:servicios/providers/reporte_form_provider.dart';
 import 'package:servicios/providers/socket_service.dart';
 import 'package:servicios/providers/ui_provider.dart';
 
+import 'package:servicios/helpers/mostrar_alerta.dart';
 import 'package:servicios/widgets/forma_fondo.dart';
 import 'package:servicios/widgets/imagen_reporte.dart';
 import 'package:servicios/widgets/progress_circular.dart';
@@ -250,9 +250,11 @@ class _ItemForm extends StatelessWidget {
                     // guardar info en mongo
                     final bool reporte = await authProvider.reporte(usuario.nombre, usuario.numero, imageUrl!, reporteForm.direccion.trim(), reporteForm.descripcion.trim(), this.servicio.nombre);
                     uiProvider.isLoading = false;
+                    
                     if(reporte == false) {
                       mostrarAlerta(context, 'Algo salio Mal', 'Vuelva a intentarlo, hubo algun problema de conexion y no se pudo enviar el reporte');
-                    } 
+                    }
+
                     // Enviar por socket de la info
                     socketService.emit('prueba', {
                       'nombre': usuario.nombre,
@@ -260,13 +262,14 @@ class _ItemForm extends StatelessWidget {
                       'urlImagen': imageUrl,
                       'direccion': reporteForm.direccion.trim(),
                       'descripcion': reporteForm.descripcion.trim(),
-                      'tipoServicio': this.servicio.nombre
+                      'tipoServicio': this.servicio.nombre,
+                      'eliminado': false
                     });
 
                     // Mostrar Alerta de enviado
                     await mostrarAlerta(context, 'Enviado', 'El reporte se envio correctamente');
-                    
                     Navigator.pushReplacementNamed(context, 'home');
+                     
                   }, 
                   child: FadeInRight(
                     delay: Duration(milliseconds: 800),

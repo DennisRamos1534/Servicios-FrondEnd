@@ -29,7 +29,7 @@ class LoadingPage extends StatelessWidget {
     final socketService = Provider.of<SocketService>(context, listen: false);
     
     final autenticado = await authProvier.isLoggedIn();
-    print(autenticado);
+    // print(autenticado);
 
     if(autenticado) {
       // conectar al socket server

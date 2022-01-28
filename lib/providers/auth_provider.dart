@@ -82,14 +82,9 @@ class AuthProvider with ChangeNotifier {
     if(resp.statusCode == 200) {
       final loginResponse = loginResponseFromJson(resp.body);
       this.usuario = loginResponse.usuario;
-      // print(this.usuario);
-      // Agregamos el nombre
-      // this._nombreUsuario = this.usuario.nombre;
       
       // Guardar token en lugar seguro
       await this._guardarToken(loginResponse.token!);
-      // Guardar password en el localStorage
-      // await this._guardarPassword(password);
 
       return true;
     } else {
@@ -144,13 +139,36 @@ class AuthProvider with ChangeNotifier {
       'urlImagen': urlImage,
       'direccion': direccion,
       'descripcion': descripcion,
-      'tipoServicio': tipoServicio
+      'tipoServicio': tipoServicio,
+      'eliminado': false
     };
 
     final uri = Uri.parse('${ Environment.apiUrl }/reporte/new');
 
     final resp = await http.post(uri,
       body: jsonEncode(data),
+      headers: { 'Content-Type': 'application/json' }
+    );
+
+    // this.autenticando = false;
+
+    if(resp.statusCode == 200) {
+
+      return true;
+    } else {
+      
+      return false;
+    }
+  }
+
+
+  Future borrarReporte( String uid) async {
+
+    // this.autenticando = true;
+
+    final uri = Uri.parse('${ Environment.apiUrl }/reporte/$uid');
+
+    final resp = await http.delete(uri,
       headers: { 'Content-Type': 'application/json' }
     );
 
@@ -213,7 +231,6 @@ class AuthProvider with ChangeNotifier {
     if(resp.statusCode == 200) {
       final loginResponse = loginResponseFromJson(resp.body);
       this.usuario = loginResponse.usuario;
-      this._nombreUsuario = this.usuario.nombre;
       
       // Guardar token en lugar seguro
       await this._guardarToken(loginResponse.token!);

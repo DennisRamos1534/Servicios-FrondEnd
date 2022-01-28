@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 import 'package:servicios/providers/ui_provider.dart';
+import 'package:servicios/providers/auth_provider.dart';
+import 'package:servicios/providers/reporte_provider.dart';
 
 import 'package:servicios/pages/servicios_page.dart';
 import 'package:servicios/pages/historial_page.dart';
@@ -50,10 +52,18 @@ class __BarraNavegacionState extends State<_BarraNavegacion> {
       backgroundColor: Colors.white,
       animationCurve: Curves.easeInOut,
       animationDuration: Duration(milliseconds: 600),
-      onTap: (index) {
+      onTap: (index) async {
+        
         setState(() {
           uiProvider.selectedMenuOpt = index;
         });
+
+        if(index == 0) {
+          final authProvider = Provider.of<AuthProvider>(context, listen: false);
+          final reporteProvider = Provider.of<ReporteProvider>(context, listen: false);
+          final usuario = authProvider.usuario;
+          await reporteProvider.reporteFiltrado(usuario.numero);
+        }
       },
       letIndexChange: (index) => true,
     );
@@ -66,7 +76,6 @@ class _HomePageBody extends StatelessWidget {
   Widget build(BuildContext context) {
     
     final uiProvider = Provider.of<UiProvider>(context);
-
     final currentIndex = uiProvider.selectedMenuOpt;
 
     switch(currentIndex) {

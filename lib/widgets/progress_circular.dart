@@ -1,3 +1,6 @@
+// import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProgressCircular extends StatelessWidget {
@@ -9,10 +12,10 @@ class ProgressCircular extends StatelessWidget {
       height: 60,
       width: 60,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
+        // color: Colors.white.withOpacity(0.9),
         shape: BoxShape.circle
       ),
-      child: CircularProgressIndicator(),     
+      child:  CircularProgressIndicator(),     
     );
   }
 }
