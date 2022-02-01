@@ -86,7 +86,7 @@ class _CustomItemListTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(Icons.circle_rounded, color: Colors.green),
+      leading: Icon(Icons.circle_rounded, color: reporte.estado ? Colors.green : Colors.red),
       title: Text(this.reporte.nombre, style: TextStyle(fontSize: 22, fontFamily: 'TenaliRamakrishna')),
       subtitle: Text(this.reporte.direccion, style: TextStyle(fontSize: 14)),
       dense: true,

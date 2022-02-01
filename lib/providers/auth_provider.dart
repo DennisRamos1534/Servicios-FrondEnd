@@ -140,7 +140,8 @@ class AuthProvider with ChangeNotifier {
       'direccion': direccion,
       'descripcion': descripcion,
       'tipoServicio': tipoServicio,
-      'eliminado': false
+      'eliminado': false,
+      'estado': false
     };
 
     final uri = Uri.parse('${ Environment.apiUrl }/reporte/new');
@@ -153,11 +154,14 @@ class AuthProvider with ChangeNotifier {
     // this.autenticando = false;
 
     if(resp.statusCode == 200) {
-
+      // final reporteResponse = reporteResponseFromJson(resp.body);
+      // this.reporteObj = reporteResponse.reporte;
+      // return this.reporteObj;
       return true;
     } else {
       
-      return false;
+      return [];
+      // return false;
     }
   }
 

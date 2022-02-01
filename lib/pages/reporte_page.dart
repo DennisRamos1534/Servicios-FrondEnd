@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:animate_do/animate_do.dart';
+// import 'package:servicios/models/reporte.dart';
 
 import 'package:servicios/providers/auth_provider.dart';
 import 'package:servicios/providers/reporte_form_provider.dart';
@@ -63,6 +64,7 @@ class _FormularioReporte extends StatelessWidget {
                     delay: Duration(milliseconds: 300),
                     child: IconButton(
                       onPressed: () => {
+                        // vaciar la imagen 
                         uiProvider.imagePath = '',
                         Navigator.of(context).pop()
                       }, 
@@ -249,6 +251,7 @@ class _ItemForm extends StatelessWidget {
                     final String? imageUrl = await uiProvider.cargarImagen(); // Url de la imagen para subir a Mongo
                     // guardar info en mongo
                     final bool reporte = await authProvider.reporte(usuario.nombre, usuario.numero, imageUrl!, reporteForm.direccion.trim(), reporteForm.descripcion.trim(), this.servicio.nombre);
+                    // final bool reporte = await authProvider.reporte(usuario.nombre, usuario.numero, imageUrl!, reporteForm.direccion.trim(), reporteForm.descripcion.trim(), this.servicio.nombre);
                     uiProvider.isLoading = false;
                     
                     if(reporte == false) {
@@ -263,13 +266,16 @@ class _ItemForm extends StatelessWidget {
                       'direccion': reporteForm.direccion.trim(),
                       'descripcion': reporteForm.descripcion.trim(),
                       'tipoServicio': this.servicio.nombre,
-                      'eliminado': false
+                      'eliminado': false,
+                      'estado': false,
+                      'uid': ''
                     });
 
                     // Mostrar Alerta de enviado
                     await mostrarAlerta(context, 'Enviado', 'El reporte se envio correctamente');
+                    uiProvider.imagePath = '';
                     Navigator.pushReplacementNamed(context, 'home');
-                     
+
                   }, 
                   child: FadeInRight(
                     delay: Duration(milliseconds: 800),
