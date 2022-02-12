@@ -10,15 +10,14 @@ class ItemMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 150,
-      height: 150,
+      width: 130,
+      height: 130,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50),
+        borderRadius: BorderRadius.circular(40),
         gradient: RadialGradient(
           colors: [
             Color.fromRGBO(234, 234, 236, 1),
             Color(0xFFe5dde6)
-            // Color.fromRGBO(154, 196, 237, 1)
           ]
         ),
         boxShadow: <BoxShadow> [
@@ -35,7 +34,6 @@ class _Item extends StatelessWidget {
 
   final IconData icon;
   final String nombre;
-  // final String? image;
 
   const _Item(this.icon, this.nombre);
 
@@ -44,14 +42,11 @@ class _Item extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Icon(this.icon, color: Color.fromRGBO(55, 55, 78, 1), size: 80),
-          // Image(image: AssetImage(this.image))
           
           Icon(this.icon, color: Color.fromRGBO(222, 113, 82, 1), size: 80),
       
-        // Icon(this.icon, color: Color.fromRGBO(104, 78, 212, 1), size: 80),
         SizedBox(height: 10),
-        Text(this.nombre, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+        Text(this.nombre, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
         SizedBox(height: 10),
       ],
     );

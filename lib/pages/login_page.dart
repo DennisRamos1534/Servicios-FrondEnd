@@ -40,7 +40,7 @@ class _Formulario extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          SizedBox(height: size.height * 0.5),
+          SizedBox(height: size.height * 0.39),
 
           Container(
             padding: EdgeInsets.symmetric(horizontal: 40.0),
@@ -53,7 +53,7 @@ class _Formulario extends StatelessWidget {
                   FadeIn(
                     duration: Duration(seconds: 1),
                     child: Container(
-                      padding: EdgeInsets.only(top: 3, left: 3, bottom: 3, right: 20),
+                      padding: EdgeInsets.only(top: 3, left: 4, bottom: 3, right: 20),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: <BoxShadow> [
@@ -80,7 +80,7 @@ class _Formulario extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: 30),
+                  SizedBox(height: 20),
 
                   FadeIn(
                     duration: Duration(milliseconds: 1000),
@@ -113,7 +113,7 @@ class _Formulario extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: 60),
+                  SizedBox(height: 35),
 
                   GestureDetector(
                     onTap: authProvier.autenticando ? null : () async {
@@ -137,8 +137,8 @@ class _Formulario extends StatelessWidget {
                     child: FadeInUp(
                       delay: Duration(milliseconds: 600),
                       child: Container(
-                        width: 100,
-                        height: 100,
+                        width: 85,
+                        height: 85,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           gradient: LinearGradient(
@@ -154,16 +154,14 @@ class _Formulario extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: 40),
+                  SizedBox(height: size.height * 0.04),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('¿No tienes una cuenta?'),
-                      // SizedBox(width: 5),
                       TextButton(
                         onPressed: () {
-                          // Navigator.pushNamed(context, 'registro');
                           Navigator.pushReplacementNamed(context, 'registro');
                         }, 
                         child: Text('Registrate', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
@@ -194,23 +192,23 @@ class _Logo extends StatelessWidget {
     return Column(
 
       children: [
-        SizedBox(height: size.height * 0.17),
+        SizedBox(height: size.height * 0.13),
         
         Center(
           child: FadeInDown(
             delay: Duration(seconds: 1),
             child: Image(
               image: AssetImage('assets/logo.png'),
-              width: size.width * 0.25,
+              height: size.height * 0.15,
             ),
           ),
         ),
 
-        SizedBox(height: size.height * 0.02),
+        SizedBox(height: 5),
 
         FadeInRight(
           duration: Duration(milliseconds: 500),
-          child: Text('Login', style: TextStyle(fontSize: 30, fontFamily: 'Pacifico'))
+          child: Text('Login', style: TextStyle(fontSize: 23, fontFamily: 'Pacifico'))
         )
       ],
     );
@@ -258,7 +256,6 @@ class _Circulo extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(300),
         color: Colors.white54,
-        // color: Color.fromRGBO(255, 255, 255, 0.2),
       ),
     );
   }

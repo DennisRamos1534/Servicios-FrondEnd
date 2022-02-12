@@ -44,10 +44,6 @@ class _FormularioUsuario extends StatelessWidget {
     final usuario = authProvider.usuario;
     final usuarioForm = Provider.of<UsuarioFormProvider>(context);
     final uiProvider = Provider.of<UiProvider>(context);
-    
-    // usuarioForm.nombre = usuario.nombre;
-    // usuarioForm.numero = usuario.numero;
-    // uiProvider.nombreUsuario = usuario.nombre;
 
 
     return Container(
@@ -85,10 +81,6 @@ class _FormularioUsuario extends StatelessWidget {
                       hintStyle: TextStyle(color: Colors.grey),
                       prefixIcon: Icon(Icons.person, color: Colors.orange),
                     ),
-                    // onChanged: (value) => usuarioForm.nombre = value,
-                    // validator: (value) {
-                    //   return value!.trim().length >  3 ? null : 'Debe de ser mayor a 3 letras';
-                    // },
                   ),
                 ),
               ),
@@ -100,7 +92,6 @@ class _FormularioUsuario extends StatelessWidget {
                 delay: Duration(milliseconds: 400),
                 duration: Duration(milliseconds: 500),
                 child: Container(
-                  // margin: EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: <BoxShadow> [
@@ -120,12 +111,6 @@ class _FormularioUsuario extends StatelessWidget {
                       hintStyle: TextStyle(color: Colors.grey),
                       prefixIcon: Icon(Icons.phone_iphone_rounded, color: Colors.orange),
                     ),
-                    // onChanged: (value) => usuarioForm.numero = value,
-                    // validator: (value) {
-                    //   if(value != null && value.length == 10) return null;
-                    //   return 'Debe de tener 10 numeros';
-                    // },
-                    // maxLines: 4,
                   ),
                 ),
               ),
@@ -136,7 +121,6 @@ class _FormularioUsuario extends StatelessWidget {
                 delay: Duration(milliseconds: 500),
                 duration: Duration(milliseconds: 500),
                 child: Container(
-                  // margin: EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: <BoxShadow> [
@@ -172,7 +156,7 @@ class _FormularioUsuario extends StatelessWidget {
                 delay: Duration(milliseconds: 700),
                 duration: Duration(milliseconds: 500),
                 child: TextButton(
-                  onPressed:() async {
+                  onPressed: uiProvider.isLoading ? null : () async {
 
                     if(usuarioForm.isValidForm()) {
                       FocusScope.of(context).unfocus();
@@ -181,9 +165,7 @@ class _FormularioUsuario extends StatelessWidget {
                       final usuarioOk = await authProvider.actualizarUsuario( usuario.nombre, usuarioForm.password.toString().trim(), usuario.uid);
                       uiProvider.isLoading = false;
                       if(usuarioOk) {
-                        // authProvider.nombreUsuario = usuarioForm.nombre.toString().trim();
                         await mostrarAlerta(context, 'El usuario se actualizo', 'El usuario se actualizo correctamente');
-                        // usuarioForm.password = '';
                       } else {
                         // mostrar Alerta
                         mostrarAlerta(context, 'Numero repetido', 'El numero ya esta registrado en otra cuenta');
@@ -202,14 +184,10 @@ class _FormularioUsuario extends StatelessWidget {
                         colors: [
                           Color(0xffFF9460),
                           Color(0xffFF6D2A),
-                          // Color.fromRGBO(55, 56, 79, 1),
-                          // Color.fromRGBO(61, 113, 133, 1),
-                          // Color.fromRGBO(247, 204, 129, 1),
-                          // Color.fromRGBO(222, 113, 82, 1),
                         ]
                       ),
                     ),
-                    child: Text('Actualizar', style: TextStyle(color: Colors.white, fontSize: 21, fontFamily: 'LobsterTwo'))
+                    child: Text(uiProvider.isLoading ? 'Espere...' : 'Actualizar', style: TextStyle(color: Colors.white, fontSize: 21, fontFamily: 'LobsterTwo'))
                   ),
                 ),
               ),

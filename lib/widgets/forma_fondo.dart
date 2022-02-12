@@ -40,9 +40,6 @@ class _HeaderHomePainert extends CustomPainter {
     path.lineTo( 0, size.height * 0.3 );
     path.quadraticBezierTo( size.width * 0.01 , size.height *  0.1, size.width * 0.55 , size.height * 0.07 );
     path.quadraticBezierTo( size.width * 0.82, size.height * 0.05 , size.width * 0.85 , 0 );
-    // path.lineTo( 0, size.height * 0.38 );
-    // path.quadraticBezierTo( size.width * 0.03 , size.height *  0.25, size.width * 0.55 , size.height * 0.2 );
-    // path.quadraticBezierTo( size.width * 0.85 , size.height * 0.15 , size.width * 0.85 , 0 );
 
     canvas.drawPath(path, paint);
   }
@@ -70,7 +67,6 @@ class _BottomHomePainert extends CustomPainter {
     path.quadraticBezierTo( size.width * 0.85 , size.height *  0.94, size.width * 0.85 , size.height * 0.9 );
     path.quadraticBezierTo( size.width * 0.88 , size.height *  0.87, size.width, size.height * 0.91 );
     path.lineTo(size.width, size.height);
-    // path.quadraticBezierTo( size.width * 0.82, size.height * 0.05 , size.width * 0.85 , 0 );
 
     canvas.drawPath(path, paint);
   }

@@ -6,9 +6,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:servicios/global/environment.dart';
 import 'package:servicios/models/login_response.dart';
+import 'package:servicios/models/reporte.dart';
+import 'package:servicios/models/reporte_response.dart';
 import 'package:servicios/models/usuario.dart';
 
 class AuthProvider with ChangeNotifier {
+
+  List<Reporte> reportes = [];
 
   late Usuario usuario;
   bool _autenticando = false;
@@ -44,20 +48,6 @@ class AuthProvider with ChangeNotifier {
     await _storage.delete(key: 'token');
   }
 
-  /////////////////// password en el localStorage   ////////////////////////
-
-  // getters gel token de forma estatica 
-  // static Future<String> getPassword() async {
-  //   final _storage = new FlutterSecureStorage();
-  //   final password = await _storage.read(key: 'password');
-  //   return password!;
-  // }
-
-  // static Future<void> deletePassword() async {
-  //   final _storage = new FlutterSecureStorage();
-  //   await _storage.delete(key: 'password');
-  // }
-
   Future<bool> login(String numero, String password) async {
 
     this.autenticando = true;
@@ -76,7 +66,6 @@ class AuthProvider with ChangeNotifier {
       }
     );
 
-    // print(resp.body);
     this.autenticando = false;
 
     if(resp.statusCode == 200) {
@@ -109,18 +98,14 @@ class AuthProvider with ChangeNotifier {
       headers: { 'Content-Type': 'application/json' }
     );
     
-    // print(resp.body);
     this.autenticando = false;
 
     if(resp.statusCode == 200) {
       final loginResponse = loginResponseFromJson(resp.body);
       this.usuario = loginResponse.usuario;
-      // this._nombreUsuario = this.usuario.nombre;
       
       // Guardar token en lugar seguro
       await this._guardarToken(loginResponse.token!);
-      // Guardar password en el localStorage
-      // await this._guardarPassword(password);
 
       return true;
     } else {
@@ -130,8 +115,6 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future reporte(String nombre, String numero, String urlImage, String direccion, String descripcion, String tipoServicio) async {
-
-    // this.autenticando = true;
 
     final data = {
       'nombre': nombre,
@@ -151,32 +134,26 @@ class AuthProvider with ChangeNotifier {
       headers: { 'Content-Type': 'application/json' }
     );
 
-    // this.autenticando = false;
-
     if(resp.statusCode == 200) {
-      // final reporteResponse = reporteResponseFromJson(resp.body);
-      // this.reporteObj = reporteResponse.reporte;
-      // return this.reporteObj;
-      return true;
+      final reporteResponse = reporteResponseFromJson(resp.body);
+      this.reportes = reporteResponse.reporte;
+      return this.reportes[0].uid;
+      // return true;
     } else {
       
-      return [];
-      // return false;
+      // return [];
+      return false;
     }
   }
 
 
   Future borrarReporte( String uid) async {
 
-    // this.autenticando = true;
-
     final uri = Uri.parse('${ Environment.apiUrl }/reporte/$uid');
 
     final resp = await http.delete(uri,
       headers: { 'Content-Type': 'application/json' }
     );
-
-    // this.autenticando = false;
 
     if(resp.statusCode == 200) {
 
@@ -190,8 +167,6 @@ class AuthProvider with ChangeNotifier {
 
   Future actualizarUsuario(String nombre,String password, String uid) async {
 
-    // this.autenticando = true;
-
     final data = {
       'nombre': nombre,
       'password': password
@@ -204,11 +179,8 @@ class AuthProvider with ChangeNotifier {
       headers: { 'Content-Type': 'application/json' }
     );
 
-    // this.autenticando = false;
-
     if(resp.statusCode == 200) {
-      // final loginResponse = loginResponseFromJson(resp.body);
-      // this.usuario = loginResponse.usuario;
+      
       return true;
     } else {
       
@@ -249,15 +221,7 @@ class AuthProvider with ChangeNotifier {
     return await _storage.write(key: 'token', value: token);
   }
 
-  // Future _guardarPassword(String password) async {
-  //   return await _storage.write(key: 'password', value: password);
-  // }
-
   Future logout() async {
     await _storage.delete(key: 'token');
   }
-
-  // Future eliminarPassword() async {
-  //   await _storage.delete(key: 'password');
-  // }
 }

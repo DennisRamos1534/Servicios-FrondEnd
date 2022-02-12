@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,8 +18,7 @@ class LoadingPage extends StatelessWidget {
         builder: ( context, snapshot) {
 
           return Center(
-            // child: Text('Espere...'),
-            child: CircularProgressIndicator(),
+            child: Platform.isAndroid ? CircularProgressIndicator() : CupertinoActivityIndicator(radius: 50),
           );
         },
       ),
@@ -29,7 +31,6 @@ class LoadingPage extends StatelessWidget {
     final socketService = Provider.of<SocketService>(context, listen: false);
     
     final autenticado = await authProvier.isLoggedIn();
-    // print(autenticado);
 
     if(autenticado) {
       // conectar al socket server

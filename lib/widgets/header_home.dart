@@ -42,7 +42,7 @@ class _TituloHeader extends StatelessWidget {
           FadeInLeft(
             delay: Duration(milliseconds: 650),
             duration: Duration(milliseconds: 500),
-            child: Text('Servicos del Ayuntamiento', style: TextStyle(color: Colors.white, fontFamily: 'LobsterTwo', fontSize: 25))
+            child: Text('Servicios del Ayuntamiento', style: TextStyle(color: Colors.white, fontFamily: 'LobsterTwo', fontSize: 25))
           )
         ],
       ),
@@ -62,8 +62,6 @@ class _AvatarHome extends StatelessWidget {
       delay: Duration(milliseconds: 750),
       duration: Duration(milliseconds: 500),
       child: CircleAvatar(
-        // backgroundColor: Color.fromRGBO(228, 224, 230, 1),
-        // backgroundColor: Color.fromRGBO(228, 213, 170, 1),
         backgroundColor: Color.fromRGBO(222, 113, 82, 1),
         radius: 30.0,
         child: Text(usuario.nombre.substring(0,2), style: TextStyle(fontSize: 20)),
@@ -108,7 +106,6 @@ class _HeaderHomePainert extends CustomPainter {
 
     final path = new Path();
     path.lineTo( 0, size.height * 0.48 );
-    // path.addArc(oval, startAngle, sweepAngle)
     path.quadraticBezierTo( size.width * 0.07 , size.height *  0.58, size.width * 0.25 , size.height * 0.58 );
     path.quadraticBezierTo( size.width * 0.3 , size.height * 0.58 , size.width * 0.7 , size.height * 0.57 );
     path.quadraticBezierTo( size.width * 0.95 , size.height * 0.57 , size.width , size.height * 0.66 );
@@ -227,10 +224,7 @@ class _HeaderPainterMorado extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = new Paint();
 
-    // paint.color = Color(0xff6C4DDC);
     paint.color = Color.fromRGBO(231, 213, 172, 1);
-    // paint.color = Color.fromRGBO(121, 189, 160, 1);
-    // paint.color = Color.fromRGBO(69, 104, 127, 1);
     paint.style = PaintingStyle.fill;
     paint.strokeWidth = 5;
 

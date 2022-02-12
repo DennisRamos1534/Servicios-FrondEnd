@@ -42,15 +42,9 @@ class ImagenReporte extends StatelessWidget {
       File(url),
       fit: BoxFit.cover,
     );
-      // return FadeInImage(
-      //   placeholder: AssetImage('assets/jar-loading.gif'), 
-      //   image: NetworkImage('https://icons.iconarchive.com/icons/bokehlicia/captiva/256/multimedia-photo-manager-icon.png'),
-      //   fit: BoxFit.cover,
-      // );
   }
 
   BoxDecoration _imagenDecoration() => BoxDecoration(
-    // color: Colors.black12,
     borderRadius: BorderRadius.only(topLeft: Radius.circular(45), topRight: Radius.circular(45)),
     boxShadow: [
       BoxShadow(color: Colors.black12, blurRadius: 20, offset: Offset(0, 5), spreadRadius: 5)

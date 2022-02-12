@@ -10,13 +10,6 @@ class UiProvider extends ChangeNotifier {
   int _selectedMenuOpt = 1;
   String _imagePath = '';
   bool _isLoading = false;
-  // String _nombreUsuario = '';
-
-  // String get nombreUsuario => this._nombreUsuario;
-  // set nombreUsuario(String valor) {
-  //   this._nombreUsuario = valor;
-  //   notifyListeners();
-  // }
 
   bool get isLoading => this._isLoading;
   set isLoading(bool valor) {

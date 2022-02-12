@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:animate_do/animate_do.dart';
-// import 'package:servicios/models/reporte.dart';
 
 import 'package:servicios/providers/auth_provider.dart';
 import 'package:servicios/providers/reporte_form_provider.dart';
@@ -28,11 +27,10 @@ class ReportePage extends StatelessWidget {
       body: Stack(
         children: [
           _FondoReporte(),
-          // _TituloReporte(),
           _FormularioReporte(servicio),
 
           if(uiProvider.isLoading)
-            Positioned(bottom: 30, left: size.width * 0.5 - 30, child: ProgressCircular())
+            Positioned(bottom: 200, left: size.width * 0.5 - 50, child: ProgressCircular())
         ],
       ),
     );
@@ -83,13 +81,11 @@ class _FormularioReporte extends StatelessWidget {
                         final XFile? pickedFileCamara = await pickerCamara.pickImage(source: ImageSource.camera, imageQuality: 30);
                       
                         if(pickedFileCamara == null) {
-                          // print('No selecciono nada');
                           uiProvider.imagePath = '';
                           return;
                         }
 
                         uiProvider.imagePath = pickedFileCamara.path;
-                        // print('Tenemos imagen ${pickedFileCamara.path}');
                         uiProvider.selectedImage(pickedFileCamara.path);
                       }, 
                       icon: Icon(Icons.camera_alt, size: 40, color: Colors.white)
@@ -110,12 +106,10 @@ class _FormularioReporte extends StatelessWidget {
                       
                         if(pickedFileGaleria == null) {
                           uiProvider.imagePath = '';
-                          // print('No selecciono nada');
                           return;
                         }
 
                         uiProvider.imagePath = pickedFileGaleria.path;
-                        // print('Tenemos imagen ${pickedFileGaleria.path}');
                         uiProvider.selectedImage(pickedFileGaleria.path);
                       }, 
                       icon: Icon(Icons.image, size: 40, color: Colors.white)
@@ -156,7 +150,6 @@ class _ItemForm extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
       width: double.infinity,
-      // height: 200,
       decoration: BoxDecoration(),
       child: Form(
         key: reporteForm.reporteFormKey,
@@ -175,7 +168,6 @@ class _ItemForm extends StatelessWidget {
               delay: Duration(milliseconds: 400),
               duration: Duration(seconds: 1),
               child: Container(
-                // margin: EdgeInsets.symmetric(horizontal: 20),
                 padding: EdgeInsets.only(top: 3, left: 3, bottom: 3, right: 20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
@@ -243,14 +235,14 @@ class _ItemForm extends StatelessWidget {
                 Icon(this.servicio.icon, size: 70, color: Color.fromRGBO(222, 113, 82, 1)),
                 
                 TextButton(
-                  onPressed: () async {
+                  onPressed: uiProvider.isLoading ? null : () async {
                     if(!reporteForm.isValidForm()) return;
                     FocusScope.of(context).unfocus();
                     uiProvider.isLoading = true;
                     // cargar imagen en cloudinary
                     final String? imageUrl = await uiProvider.cargarImagen(); // Url de la imagen para subir a Mongo
                     // guardar info en mongo
-                    final bool reporte = await authProvider.reporte(usuario.nombre, usuario.numero, imageUrl!, reporteForm.direccion.trim(), reporteForm.descripcion.trim(), this.servicio.nombre);
+                    final reporte = await authProvider.reporte(usuario.nombre, usuario.numero, imageUrl!, reporteForm.direccion.trim(), reporteForm.descripcion.trim(), this.servicio.nombre);
                     // final bool reporte = await authProvider.reporte(usuario.nombre, usuario.numero, imageUrl!, reporteForm.direccion.trim(), reporteForm.descripcion.trim(), this.servicio.nombre);
                     uiProvider.isLoading = false;
                     
@@ -268,7 +260,7 @@ class _ItemForm extends StatelessWidget {
                       'tipoServicio': this.servicio.nombre,
                       'eliminado': false,
                       'estado': false,
-                      'uid': ''
+                      'uid': reporte
                     });
 
                     // Mostrar Alerta de enviado
@@ -291,12 +283,10 @@ class _ItemForm extends StatelessWidget {
                           colors: [
                             Color.fromRGBO(55, 56, 79, 1),
                             Color.fromRGBO(61, 113, 133, 1),
-                            // Color.fromRGBO(247, 204, 129, 1),
-                            // Color.fromRGBO(222, 113, 82, 1),
                           ]
                         ),
                       ),
-                      child: Text('Enviar Reporte', style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'LobsterTwo'))
+                      child: Text(uiProvider.isLoading ? 'Espere...' : 'Enviar Reporte', style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'LobsterTwo'))
                     ),
                   ),
                 ),
@@ -309,37 +299,6 @@ class _ItemForm extends StatelessWidget {
   }
 }
 
-// class _TituloReporte extends StatelessWidget {
-
-//   @override
-//   Widget build(BuildContext context) {
-
-//     // final size = MediaQuery.of(context).size;
-
-//     return Stack(
-//       children: [
-//         Positioned(
-//           top: 60,
-//           left: 20,
-//           child: IconButton(
-//             onPressed: () => Navigator.of(context).pop(), 
-//             icon: Icon(Icons.arrow_back_ios_new, size: 40, color: Colors.white)
-//           )
-//         ),
-//         Positioned(
-//           top: 60,
-//           right: 20,
-//           child: IconButton(
-//             onPressed: () {
-
-//             }, 
-//             icon: Icon(Icons.camera_alt, size: 40, color: Colors.white)
-//           )
-//         ),
-//       ],
-//     );
-//   }
-// }
 
 class _FondoReporte extends StatelessWidget {
 
@@ -353,8 +312,6 @@ class _FondoReporte extends StatelessWidget {
           colors: [
             Color.fromRGBO(247, 204, 129, 1),
             Color.fromRGBO(252, 230, 185, 1)
-            // Color.fromRGBO(224, 162, 149, 1),
-            // Color.fromRGBO(211, 121, 135, 1)
           ]
         )
       ),

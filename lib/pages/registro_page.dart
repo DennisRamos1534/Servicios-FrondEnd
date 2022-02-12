@@ -39,7 +39,7 @@ class _Formulario extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          SizedBox(height: size.height * 0.43),
+          SizedBox(height: size.height * 0.37),
 
           Container(
             padding: EdgeInsets.symmetric(horizontal: 40.0),
@@ -79,7 +79,7 @@ class _Formulario extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: 30),
+                  SizedBox(height: 20),
 
                   FadeIn(
                     delay: Duration(milliseconds: 200),
@@ -113,7 +113,7 @@ class _Formulario extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: 30),
+                  SizedBox(height: 20),
 
                   FadeIn(
                     delay: Duration(milliseconds: 300),
@@ -145,7 +145,7 @@ class _Formulario extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: 40),
+                  SizedBox(height: 25),
 
                   GestureDetector(
                     onTap: authProvider.autenticando ? null : () async {
@@ -159,7 +159,6 @@ class _Formulario extends StatelessWidget {
                         } else {
                           mostrarAlerta(context, 'Registro Incorrecto', registroOk);
                         }
-                        // Navigator.pushNamed(context, 'home');
                         // FocusScope.of(context).unfocus();
                       }
                     },
@@ -167,8 +166,8 @@ class _Formulario extends StatelessWidget {
                       delay: Duration(milliseconds: 800),
                       duration: Duration(milliseconds: 600),
                       child: Container(
-                        width: 100,
-                        height: 100,
+                        width: 80,
+                        height: 80,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           gradient: LinearGradient(
@@ -190,10 +189,8 @@ class _Formulario extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('¿Ya tienes una cuenta?'),
-                      // SizedBox(width: 5),
                       TextButton(
                         onPressed: () {
-                          // Navigator.pushNamed(context, 'login');
                           Navigator.pushReplacementNamed(context, 'login');
                         }, 
                         child: Text('Login', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
@@ -224,7 +221,7 @@ class _Logo extends StatelessWidget {
     return Column(
 
       children: [
-        SizedBox(height: size.height * 0.15),
+        SizedBox(height: size.height * 0.12),
         
         Center(
           child: FadeInDown(
@@ -232,17 +229,17 @@ class _Logo extends StatelessWidget {
             duration: Duration(milliseconds: 800),
             child: Image(
               image: AssetImage('assets/logo.png'),
-              width: size.width * 0.25,
+              height: size.height * 0.15,
             ),
           ),
         ),
 
-        SizedBox(height: size.height * 0.02),
+        SizedBox(height: size.height * 0.01),
 
         FadeInLeft(
           delay: Duration(milliseconds: 500),
           duration: Duration(milliseconds: 500),
-          child: Text('Registro', style: TextStyle(fontSize: 30, fontFamily: 'Pacifico'))
+          child: Text('Registro', style: TextStyle(fontSize: 23, fontFamily: 'Pacifico'))
         ),
       ],
     );
@@ -261,7 +258,6 @@ class _FondoColor extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            // Colors.red,
             Color.fromRGBO(205, 205, 205, 1),
             Color.fromRGBO(254, 254, 254, 1)
           ],
@@ -290,7 +286,6 @@ class _Circulo extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(300),
         color: Colors.white54,
-        // color: Color.fromRGBO(255, 255, 255, 0.2),
       ),
     );
   }

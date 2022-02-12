@@ -18,7 +18,6 @@ mostrarAlerta(BuildContext context, String titulo, String subtitulo) async {
             elevation: 5,
             textColor: Colors.blue,
             onPressed: () => Navigator.pop(context)
-            // onPressed: () => Navigator.of(context).pop(true)
           )
         ],
       )
@@ -32,10 +31,8 @@ mostrarAlerta(BuildContext context, String titulo, String subtitulo) async {
       content: Text(subtitulo),
       actions: [
         CupertinoDialogAction(
-          // isDefaultAction: true,
           child: Text('Ok'),
           onPressed: () => Navigator.pop(context)
-          // onPressed: () => Navigator.of(context).pop(true)
         )
       ],
     )

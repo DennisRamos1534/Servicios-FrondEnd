@@ -4,8 +4,6 @@ class UsuarioFormProvider extends ChangeNotifier {
 
   GlobalKey<FormState> usuarioFormKey = new GlobalKey<FormState>(); 
    
-  // String nombre = '';
-  // String numero = '';
   String password = '';
 
   bool isValidForm() {

@@ -54,11 +54,6 @@ class ItemListaHistorial extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                // Color(0xffD291BC),
-                // Color(0xff957DAD),
-          
-                // Color(0xffFA5F49),
-                // Color(0xffF9A59A)
           
                 Color(0xffD291BC),
                 Color(0xffFEC8D8)
@@ -80,17 +75,41 @@ class _CustomItemListTitle extends StatelessWidget {
 
   // final String titulo;
   final Reporte reporte;
-
   const _CustomItemListTitle(this.reporte);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: Icon(Icons.circle_rounded, color: reporte.estado ? Colors.green : Colors.red),
-      title: Text(this.reporte.nombre, style: TextStyle(fontSize: 22, fontFamily: 'TenaliRamakrishna')),
+      title: Text(this.reporte.tipoServicio, style: TextStyle(fontSize: 22, fontFamily: 'TenaliRamakrishna')),
       subtitle: Text(this.reporte.direccion, style: TextStyle(fontSize: 14)),
       dense: true,
-      trailing: Icon(Icons.arrow_back_ios),
+      trailing: imagen(this.reporte.urlImagen),
+    );
+  }
+}
+
+Widget imagen(url) {
+  if(url == 'no-imagen') {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: Image(
+        image: AssetImage('assets/no-image.png'),
+        width: 55,
+        height: 55,
+        fit: BoxFit.cover,
+      ),
+    );
+  } else {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: FadeInImage(
+        placeholder: AssetImage('assets/jar-loading.gif'), 
+        image: NetworkImage(url),
+        width: 55,
+        height: 55,
+        fit: BoxFit.cover,
+      ),
     );
   }
 }
